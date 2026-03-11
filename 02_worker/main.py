@@ -86,14 +86,26 @@ def run():
                     cv_backend = get_backend("cv", "resnet-50", "v1")
                     cv_res = cv_backend.infer(req_data.get("input", {}))
                     
-                    # Extract keywords from CV result
-                    top_tag = cv_res["detections"][0]["class"] if cv_res.get("detections") else "something"
+                    # Extract keywords from CV result (Top 3)
+                    detections = cv_res.get("detections", [])
+                    tags = [d["class"] for d in detections[:3]]
+                    
+                    # Basic mapping for demonstration (Ideally handled by a better LLM prompt)
+                    category_map = {
+                        "hotel_room": "호텔 객실",
+                        "bed": "침실",
+                        "cafe": "카페",
+                        "cat": "고양이",
+                        "unknown": "멋진 상품"
+                    }
+                    
+                    display_tag = category_map.get(tags[0], tags[0]) if tags else "멋진 상품"
                     
                     # Step 2: Marketing Copy (LLM)
                     r.hset(key, mapping={"pipeline_step": "generating_copy"})
                     llm_backend = get_backend("llm", "gpt-4", "v1")
                     final_res = llm_backend.infer(
-                        {"text": top_tag, "tags": [top_tag]}, 
+                        {"text": display_tag, "tags": tags}, 
                         params={"language": language, "platform": platform, "tone": tone}
                     )
                     

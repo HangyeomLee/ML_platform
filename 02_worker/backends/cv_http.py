@@ -9,12 +9,16 @@ class CVHTTPBackend(BaseBackend):
         
         image_id = payload.get("image_id", "unknown")
         # In a real scenario, this would call a CV model endpoint
+        # For simulation, we'll return some hotel-related objects if no specific image_id is given
+        detections = [
+            {"class": "hotel_room", "score": 0.95, "bbox": [0, 0, 1000, 1000]},
+            {"class": "bed", "score": 0.88, "bbox": [100, 200, 500, 600]},
+            {"class": "window", "score": 0.75, "bbox": [600, 100, 900, 400]}
+        ]
+        
         return {
             "model": self.model_name,
             "version": self.version,
-            "detections": [
-                {"class": "cat", "score": 0.98, "bbox": [10, 20, 100, 120]},
-                {"class": "dog", "score": 0.02, "bbox": [50, 60, 200, 250]}
-            ],
+            "detections": detections,
             "image_id": image_id
         }
