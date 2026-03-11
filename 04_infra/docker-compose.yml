@@ -33,3 +33,12 @@ services:
     depends_on:
       - api
       - worker
+
+  web:
+    build:
+      context: ../05_web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api

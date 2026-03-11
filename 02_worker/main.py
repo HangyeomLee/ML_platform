@@ -71,17 +71,40 @@ def run():
             task = job_data.get("task", "llm")
             model = job_data.get("model", "default")
             version = job_data.get("version", "v1")
+            language = job_data.get("language", "ko")
+            platform = job_data.get("platform", "instagram")
+            tone = job_data.get("tone", "friendly")
 
-            # Select backend
-            backend = get_backend(task, model, version)
-            
             # Start tracking metrics
             active_jobs.inc()
             start_time = time.time()
             
             try:
-                # Infer with retries
-                result = process_job(backend, req_data)
+                if task == "marketing_pipeline":
+                    # Step 1: Image Analysis (CV)
+                    r.hset(key, mapping={"pipeline_step": "analyzing_image"})
+                    cv_backend = get_backend("cv", "resnet-50", "v1")
+                    cv_res = cv_backend.infer(req_data.get("input", {}))
+                    
+                    # Extract keywords from CV result
+                    top_tag = cv_res["detections"][0]["class"] if cv_res.get("detections") else "something"
+                    
+                    # Step 2: Marketing Copy (LLM)
+                    r.hset(key, mapping={"pipeline_step": "generating_copy"})
+                    llm_backend = get_backend("llm", "gpt-4", "v1")
+                    final_res = llm_backend.infer(
+                        {"text": top_tag, "tags": [top_tag]}, 
+                        params={"language": language, "platform": platform, "tone": tone}
+                    )
+                    
+                    result = {
+                        "analysis": cv_res,
+                        "marketing": final_res
+                    }
+                else:
+                    # Single task inference
+                    backend = get_backend(task, model, version)
+                    result = process_job(backend, req_data)
 
                 # Update result
                 r.hset(key, mapping={

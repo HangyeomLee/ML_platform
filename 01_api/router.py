@@ -25,6 +25,9 @@ def create_job(req: JobRequest):
         "task": req.task,
         "model": req.model or "default",
         "version": req.version or "v1",
+        "language": req.language or "ko",
+        "platform": req.platform or "instagram",
+        "tone": req.tone or "friendly",
         "created_at_ms": str(now),
         "request": req.model_dump_json(),
     }

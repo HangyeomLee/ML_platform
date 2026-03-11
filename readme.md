@@ -9,6 +9,7 @@ A scalable, asynchronous ML inference platform built with FastAPI, Redis, and Py
 3.  **Worker (`02_worker`)**: Consumes jobs from Redis and executes inference using a modular backend strategy.
 4.  **Common (`03_common`)**: Shared schemas and configuration.
 5.  **Monitoring**: Prometheus scrapes metrics from both API and Worker.
+6.  **Web Dashboard (`05_web`)**: React-based UI for real-time job submission and status monitoring.
 
 ## Getting Started
 
@@ -25,21 +26,22 @@ docker-compose up --build
 
 ### Usage
 
-1.  **Submit a job**:
-    ```bash
-    curl -X POST http://localhost:8000/v1/jobs \
-      -H "Content-Type: application/json" \
-      -d '{"task": "llm", "input": {"text": "Hello world"}}'
-    ```
-    Response: `{"job_id": "j_...", "status": "queued"}`
-
-2.  **Check status**:
-    ```bash
-    curl http://localhost:8000/v1/jobs/{job_id}
-    ```
+1.  **Web Dashboard**: Open [http://localhost:5173](http://localhost:5173) in your browser.
+2.  **API (CLI)**:
+    - Submit a job:
+      ```bash
+      curl -X POST http://localhost:8000/v1/jobs \
+        -H "Content-Type: application/json" \
+        -d '{"task": "llm", "input": {"text": "Hello world"}}'
+      ```
+    - Check status:
+      ```bash
+      curl http://localhost:8000/v1/jobs/{job_id}
+      ```
 
 ### Monitoring
 
+- **Dashboard (Web)**: http://localhost:5173
 - **Prometheus**: http://localhost:9090
 - **API Metrics**: http://localhost:8000/metrics
 - **Worker Metrics**: http://localhost:9091 (accessible within Docker network)

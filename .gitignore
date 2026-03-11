@@ -1,0 +1,36 @@
+# OS & IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+*.env
+.pytest_cache/
+.mypy_cache/
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm
+.eslintcache
+
+# Project Specific
+01_api/common
+02_worker/common
+05_web/node_modules/
+05_web/dist/
+
+# Infrastructure & Logs
+*.log
+.docker-compose.yml.swp
+prometheus_data/
+grafana_data/
