@@ -23,3 +23,13 @@ services:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+      - worker
